@@ -3,8 +3,13 @@
 ### to run this script, type on command line:
 ### . populate_db.sh
 
+### Script assumes that the raw (uncompressed) data files,
+### Medicare_Physician_and_Other_Supplier_NPI_Aggregate_CY2014.txt and
+### Medicare_Provider_Util_Payment_PUF_CY2014.txt are located in a
+### subdirectory, "data", under the base/project directory.
+
 BASE_DIR="$HOME/repos/medicare_provider_util_payment"
-DB_DIR="$BASE_DIR/database"
+DB_DIR="/usr/local/postgresql/data"
 DB_USR="cathy"
 DB_NAME="doctordb"
 DB_HOST="localhost"
@@ -15,7 +20,7 @@ PAYMENTS_FNAME="Medicare_Provider_Util_Payment_PUF_CY2014"
 ### start postgres server ##################################
 pg_ctl -w -D $DB_DIR start -l logfile &> /dev/null
 if [ $? -eq 0 ]; then
-    echo "Database server already exists in $DB_DIR."
+    echo "Database server already exists at $DB_DIR."
 else
     mkdir $DB_DIR
     initdb $DB_DIR
