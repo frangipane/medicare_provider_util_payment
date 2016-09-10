@@ -4,3 +4,4 @@ cms_docs
 .env
 environment.yml
 logfile
+python/.ipynb_checkpoints*
