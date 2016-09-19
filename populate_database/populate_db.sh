@@ -16,7 +16,7 @@ DB_HOST="localhost"
 DATA_DIR="data"
 SUMMARY_FNAME="Medicare_Physician_and_Other_Supplier_NPI_Aggregate_CY2014"
 PAYMENTS_FNAME="Medicare_Provider_Util_Payment_PUF_CY2014"
-MEDI_HPS_FNAME="MEDI_01212013_HPS"
+MEDI_FNAME="MEDI_01212013"
 
 
 ### start postgres server ##################################
@@ -90,20 +90,23 @@ else
     psql -q -c  "COPY payments FROM '$BASE_DIR/$DATA_DIR/$PAYMENTS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to payments table."
 fi
 
-### create (empty) MEDI_HPS table (Ensemble MEDication Indication Resource) ##################################
-### MEDI-HPS contains medication-indication pairs
+### create medi_indication table (Ensemble MEDication Indication Resource) ##################################
+### contains medication-indication pairs
 ### https://medschool.vanderbilt.edu/cpm/center-precision-medicine-blog/medi-ensemble-medication-indication-resource
 
-MEDI_HPS_TABLE_EXISTS=$(psql -tAc "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'medi_hps')")
+MEDI_TABLE_EXISTS=$(psql -tAc "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'medi_indication')")
 
-if [ $MEDI_HPS_TABLE_EXISTS == 't' ]; then
-    echo "Table 'medi_hps' already exists; do nothing."
+if [ $MEDI_TABLE_EXISTS == 't' ]; then
+    echo "Table 'medi_indication' already exists; do nothing."
 else
-    psql -f $BASE_DIR/populate_database/create_medi_hps_table.sql
-    echo "Empty table, 'medi_hps', created."
+    psql -f $BASE_DIR/populate_database/create_medi_table.sql
+    echo "Empty table, 'medi_indication', created."
 
+    ### remove blank lines (postgres can't load)
+    sed -i '/^$/d' "$BASE_DIR/$DATA_DIR/$MEDI_FNAME.csv"
+    
     ### load csv files into table
-    psql -q -c  "COPY medi_hps FROM '$BASE_DIR/$DATA_DIR/$MEDI_HPS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_hps table."
+    psql -q -c  "COPY medi_indication FROM '$BASE_DIR/$DATA_DIR/$MEDI_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_indication table."
 fi
 
 ## stop postgres server ##################################
