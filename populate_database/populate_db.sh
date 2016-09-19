@@ -6,13 +6,14 @@
 ### Script assumes that the raw (uncompressed) data files,
 ### Medicare_Physician_and_Other_Supplier_NPI_Aggregate_CY2014.txt and
 ### Medicare_Provider_Util_Payment_PUF_CY2014.txt are located in a
-### subdirectory, "data", under the base/project directory.
+### subdirectory, DATA_DIR, under the base/project directory.
 
 BASE_DIR="$HOME/repos/medicare_provider_util_payment"
 DB_DIR="/usr/local/postgresql/data"
 DB_USR="cathy"
 DB_NAME="doctordb"
 DB_HOST="localhost"
+DATA_DIR="data"
 SUMMARY_FNAME="Medicare_Physician_and_Other_Supplier_NPI_Aggregate_CY2014"
 PAYMENTS_FNAME="Medicare_Provider_Util_Payment_PUF_CY2014"
 MEDI_HPS_FNAME="MEDI_01212013_HPS"
@@ -57,7 +58,7 @@ else
     echo "Empty table, 'summary', created."
 
     ### convert .text (tsv) files to csv before loading in postgres
-    if [ ! -f "$BASE_DIR/data/$SUMMARY_FNAME.csv" ]; then
+    if [ ! -f "$BASE_DIR/$DATA_DIR/$SUMMARY_FNAME.csv" ]; then
         python $BASE_DIR/utils/tsv_to_csv.py < \
                $BASE_DIR/data/$SUMMARY_FNAME.txt > \
                $BASE_DIR/data/$SUMMARY_FNAME.csv
@@ -78,7 +79,7 @@ else
     echo "Empty table, 'payments', created."
 
     ### convert .text (tsv) files to csv before loading in postgres
-    if [ ! -f "$BASE_DIR/data/$PAYMENTS_FNAME.csv" ]; then
+    if [ ! -f "$BASE_DIR/$DATA_DIR/$PAYMENTS_FNAME.csv" ]; then
         python $BASE_DIR/utils/tsv_to_csv.py < \
                $BASE_DIR/data/$PAYMENTS_FNAME.txt > \
                $BASE_DIR/data/$PAYMENTS_FNAME.csv
@@ -86,7 +87,7 @@ else
     fi
 
     ### load csv files into table
-    psql -q -c  "COPY payments FROM '$BASE_DIR/data/$PAYMENTS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to payments table."
+    psql -q -c  "COPY payments FROM '$BASE_DIR/$DATA_DIR/$PAYMENTS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to payments table."
 fi
 
 ### create (empty) MEDI_HPS table (Ensemble MEDication Indication Resource) ##################################
@@ -102,7 +103,7 @@ else
     echo "Empty table, 'medi_hps', created."
 
     ### load csv files into table
-    psql -q -c  "COPY medi_hps FROM '$BASE_DIR/data/$MEDI_HPS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_hps table."
+    psql -q -c  "COPY medi_hps FROM '$BASE_DIR/$DATA_DIR/$MEDI_HPS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_hps table."
 fi
 
 ## stop postgres server ##################################
