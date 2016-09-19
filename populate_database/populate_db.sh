@@ -15,6 +15,7 @@ DB_NAME="doctordb"
 DB_HOST="localhost"
 SUMMARY_FNAME="Medicare_Physician_and_Other_Supplier_NPI_Aggregate_CY2014"
 PAYMENTS_FNAME="Medicare_Provider_Util_Payment_PUF_CY2014"
+MEDI_HPS_FNAME="MEDI_01212013_HPS"
 
 
 ### start postgres server ##################################
@@ -86,6 +87,22 @@ else
 
     ### load csv files into table
     psql -q -c  "COPY payments FROM '$BASE_DIR/data/$PAYMENTS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to payments table."
+fi
+
+### create (empty) MEDI_HPS table (Ensemble MEDication Indication Resource) ##################################
+### MEDI-HPS contains medication-indication pairs
+### https://medschool.vanderbilt.edu/cpm/center-precision-medicine-blog/medi-ensemble-medication-indication-resource
+
+MEDI_HPS_TABLE_EXISTS=$(psql -tAc "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'medi_hps')")
+
+if [ $MEDI_HPS_TABLE_EXISTS == 't' ]; then
+    echo "Table 'medi_hps' already exists; do nothing."
+else
+    psql -f $BASE_DIR/populate_database/create_medi_hps_table.sql
+    echo "Empty table, 'medi_hps', created."
+
+    ### load csv files into table
+    psql -q -c  "COPY payments FROM '$BASE_DIR/data/$MEDI_HPS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_hps table."
 fi
 
 ## stop postgres server ##################################
