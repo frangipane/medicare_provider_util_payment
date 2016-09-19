@@ -60,8 +60,8 @@ else
     ### convert .text (tsv) files to csv before loading in postgres
     if [ ! -f "$BASE_DIR/$DATA_DIR/$SUMMARY_FNAME.csv" ]; then
         python $BASE_DIR/utils/tsv_to_csv.py < \
-               $BASE_DIR/data/$SUMMARY_FNAME.txt > \
-               $BASE_DIR/data/$SUMMARY_FNAME.csv
+               $BASE_DIR/$DATA_DIR/$SUMMARY_FNAME.txt > \
+               $BASE_DIR/$DATA_DIR/$SUMMARY_FNAME.csv
         echo "Created csv from Physician summary (aggregate) tsv file."
     fi
 
@@ -81,8 +81,8 @@ else
     ### convert .text (tsv) files to csv before loading in postgres
     if [ ! -f "$BASE_DIR/$DATA_DIR/$PAYMENTS_FNAME.csv" ]; then
         python $BASE_DIR/utils/tsv_to_csv.py < \
-               $BASE_DIR/data/$PAYMENTS_FNAME.txt > \
-               $BASE_DIR/data/$PAYMENTS_FNAME.csv
+               $BASE_DIR/$DATA_DIR/$PAYMENTS_FNAME.txt > \
+               $BASE_DIR/$DATA_DIR/$PAYMENTS_FNAME.csv
         echo "Created csv from Physician payments tsv file."
     fi
 
