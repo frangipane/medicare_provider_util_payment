@@ -102,7 +102,7 @@ else
     echo "Empty table, 'medi_hps', created."
 
     ### load csv files into table
-    psql -q -c  "COPY payments FROM '$BASE_DIR/data/$MEDI_HPS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_hps table."
+    psql -q -c  "COPY medi_hps FROM '$BASE_DIR/data/$MEDI_HPS_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_hps table."
 fi
 
 ## stop postgres server ##################################
