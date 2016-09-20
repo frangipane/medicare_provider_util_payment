@@ -11,6 +11,13 @@
 -- 63343
 SELECT COUNT(*) FROM medi_indication;
 
+
+-- How many records in table medi_indications are flagged as high precision?
+-- 13379
+SELECT COUNT(*) FROM medi_indication
+       WHERE highprecisionsubset LIKE '1';
+
+
 -- How many distinct rxcui_in are there?
 -- RxNorm Concept Unique Identifier
 -- Drugs with identical RxCUI have same ingredients, strengths, and dose forms.
@@ -34,16 +41,26 @@ SELECT COUNT(DISTINCT icd9) FROM medi_indication;
 SELECT COUNT(*) FROM medi_indication
        WHERE indication_description ILIKE '%breast%';
 
+
 -- How many descriptions contain the word breast and are high precision?
 -- 101
 SELECT COUNT(*) FROM medi_indication
        WHERE indication_description ILIKE '%breast%'
        AND highprecisionsubset LIKE '1';
 
+
 -- How many distinct drugs are there for indications containing the word breast?
 -- 182
 SELECT COUNT(DISTINCT rxcui_in) FROM medi_indication
        WHERE indication_description ILIKE '%breast%';
+
+
+-- How many distinct drugs are there for indications containing the word breast
+-- and are high precision?
+-- 70
+SELECT COUNT(DISTINCT rxcui_in) FROM medi_indication
+       WHERE indication_description ILIKE '%breast%'
+       AND highprecisionsubset LIKE '1';
 
 
 -- What are some sample rows relating to breasts?
