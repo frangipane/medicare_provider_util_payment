@@ -31,6 +31,16 @@ SELECT COUNT(DISTINCT rxcui_in) FROM medi_indication;
 SELECT COUNT(DISTINCT icd9) FROM medi_indication;
 
 
+-- How many distinct pairs of icd-9 and rxcui_in are there?
+-- 63343 (so each row is a unique combination of icd-9:rxcui_in, i.e.
+-- each row is a unique diagnosis:medicine pair)
+SELECT SUM(count_pairs) FROM (
+       SELECT COUNT(*) AS count_pairs
+              FROM medi_indication
+              GROUP BY rxcui_in, icd9
+       ) AS throwawayalias;
+
+
 -- http://www.icd9data.com/2012/Volume1/140-239/170-176/174/default.htm
 -- ICD9 diagnosis codes:
 -- malignant neoplasm of female breast - numbered 174-
