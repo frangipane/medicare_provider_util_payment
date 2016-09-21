@@ -104,7 +104,8 @@ SELECT COUNT(DISTINCT npi) FROM payments
 
 
 -- How many provider types are there?
-SELECT DISTINCT provider_type FROM summary;
+-- 91
+SELECT COUNT(DISTINCT provider_type) FROM summary;
 
 -- How many entries contain "oncology"?
 /* 
@@ -116,3 +117,39 @@ Medical Oncology
 */
 SELECT DISTINCT provider_type FROM summary
   WHERE provider_type LIKE '%Oncology';
+
+
+-- Which entries contain 'surgery'?
+-- 11 entries
+/*
+Neurosurgery
+ Maxillofacial Surgery
+ Oral Surgery (dentists only)
+ Plastic and Reconstructive Surgery
+ Thoracic Surgery
+ Cardiac Surgery
+ Hand Surgery
+ General Surgery
+ Colorectal Surgery (formerly proctology)
+ Orthopedic Surgery
+ Vascular Surgery
+*/
+SELECT DISTINCT provider_type FROM summary
+  WHERE provider_type ILIKE '%Surgery%';
+
+
+-- How many rows for general surgery?
+-- 19905
+SELECT COUNT(*) FROM summary
+  WHERE provider_type ILIKE '%General Surgery%';
+
+
+-- How many rows for orthopedic surgery?
+-- 21301
+SELECT COUNT(*) FROM summary
+  WHERE provider_type ILIKE '%Orthopedic Surgery%';
+
+-- How many distinct states for orthopedic surgery?
+-- 56
+SELECT COUNT(DISTINCT nppes_provider_state) FROM summary
+  WHERE provider_type ILIKE '%Orthopedic Surgery%';
