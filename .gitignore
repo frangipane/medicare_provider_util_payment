@@ -4,4 +4,9 @@ cms_docs
 .env
 environment.yml
 logfile
-python/.ipynb_checkpoints*
+python/.ipynb_checkpoints/*
+*.csv
+tmp
+webapp/debugging_flask.ipynb
+webapp/tmp
+webapp/flask_dev_setup.ipynb
