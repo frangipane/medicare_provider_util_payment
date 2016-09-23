@@ -35,6 +35,34 @@ SELECT DISTINCT summary.nppes_provider_state
 
 
 -- How many doctors with referrals per state?
+-- (top rows)
+/%
+ nppes_provider_state | nppes_provider_country | counts 
+----------------------+------------------------+--------
+ CA                   | US                     |     43
+ FL                   | US                     |     30
+ TX                   | US                     |     21
+ MN                   | US                     |     19
+ VA                   | US                     |     16
+ OH                   | US                     |     14
+ CT                   | US                     |     14
+ AZ                   | US                     |     12
+ MD                   | US                     |     12
+ WA                   | US                     |     11
+ NC                   | US                     |     11
+ KS                   | US                     |     10
+%/
+SELECT summary.nppes_provider_state, summary.nppes_provider_country, COUNT(*) AS counts
+  FROM doctor_ratings
+       JOIN summary
+       ON (summary.npi = doctor_ratings.npi)
+  WHERE doctor_ratings.recommended_by_doctors NOT LIKE ''
+  GROUP BY summary.nppes_provider_state, summary.nppes_provider_country
+  ORDER BY counts DESC;
+
+
+
+-- How many doctors with referrals per city?
 -- First few rows, ordered by descending # of counts:
 /*
  nppes_provider_city | counts 
@@ -75,6 +103,7 @@ SELECT DISTINCT recommended_by_doctors FROM doctor_ratings;
 -- Interesting: his relative_volume is 'lower volume'
 SELECT * FROM doctor_ratings
   WHERE recommended_by_doctors = '29';
+
 
 /*
 -- Max number of recommendations?
