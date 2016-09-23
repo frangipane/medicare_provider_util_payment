@@ -10,3 +10,5 @@ tmp
 webapp/debugging_flask.ipynb
 webapp/tmp
 webapp/flask_dev_setup.ipynb
+webapp/flaskexample/__pycache__
+webapp/.ipynb_checkpoints
