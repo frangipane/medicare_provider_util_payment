@@ -17,6 +17,8 @@ DATA_DIR="data"
 SUMMARY_FNAME="Medicare_Physician_and_Other_Supplier_NPI_Aggregate_CY2014"
 PAYMENTS_FNAME="Medicare_Provider_Util_Payment_PUF_CY2014"
 MEDI_FNAME="MEDI_01212013"
+OPENPAYMENTS_GENERAL_FNAME="OP_DTL_GNRL_PGYR2014_P06302016.csv"
+LEIE_FNAME="LEIE_08_2016.csv"
 
 
 ### start postgres server ##################################
@@ -107,6 +109,40 @@ else
     
     ### load csv files into table
     psql -q -c  "COPY medi_indication FROM '$BASE_DIR/$DATA_DIR/$MEDI_FNAME.csv' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to medi_indication table."
+fi
+
+
+### create Open Payments general payments table #######################################
+OPENPAYMENTS_GENERAL_TABLE_EXISTS=$(psql -tAc "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'openpayments_general_payments')")
+
+if [ $OPENPAYMENTS_GENERAL_TABLE_EXISTS == 't' ]; then
+    echo "Table 'openpayments_general_payments' already exists; do nothing."
+else
+    psql -f $BASE_DIR/populate_database/create_open_payments_general_payments_table.sql
+    echo "Empty table, 'openpayments_general_payments', created."
+
+    ### remove blank lines (postgres can't load)
+    sed -i '/^$/d' "$BASE_DIR/$DATA_DIR/open_payments/$OPENPAYMENTS_GENERAL_FNAME"
+    
+    ### load csv files into table
+    psql -q -c  "COPY openpayments_general_payments FROM '$BASE_DIR/$DATA_DIR/open_payments/$OPENPAYMENTS_GENERAL_FNAME' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to openpayments_general_payments table."
+fi
+
+
+### create LEIE (list of excluded providers) table #######################################
+LEIE_TABLE_EXISTS=$(psql -tAc "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'leie')")
+
+if [ $LEIE_TABLE_EXISTS == 't' ]; then
+    echo "Table 'leie' already exists; do nothing."
+else
+    psql -f $BASE_DIR/populate_database/create_LEIE_table.sql
+    echo "Empty table, 'leie', created."
+
+    ### remove blank lines (postgres can't load)
+    sed -i '/^$/d' "$BASE_DIR/$DATA_DIR/$LEIE_FNAME"
+    
+    ### load csv files into table
+    psql -q -c  "COPY leie FROM '$BASE_DIR/$DATA_DIR/$LEIE_FNAME' WITH (DELIMITER ',', FORMAT CSV, HEADER);" && echo "File copied to leie table."
 fi
 
 ## stop postgres server ##################################
