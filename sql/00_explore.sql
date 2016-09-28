@@ -10,6 +10,12 @@ SELECT COUNT(*) FROM payments;
 -- 938,147
 SELECT COUNT(DISTINCT npi) FROM payments;
 
+
+-- How many (distinct) hcpcs codes?
+-- 5972
+SELECT COUNT(DISTINCT hcpcs_code) FROM payments;
+
+
 -- Average number of rows per doctor in payments?
 -- 9.9305
 SELECT AVG(pyments)
@@ -105,6 +111,101 @@ SELECT COUNT(DISTINCT npi) FROM payments
 
 -- How many provider types are there?
 -- 91
+/*
+                provider_type                
+---------------------------------------------
+ Internal Medicine
+ Hematology/Oncology
+ Certified Clinical Nurse Specialist
+ Pediatric Medicine
+ Emergency Medicine
+ General Surgery
+ Vascular Surgery
+ Public Health Welfare Agency
+ Endocrinology
+ Osteopathic Manipulative Medicine
+ Gynecological/Oncology
+ Sleep Medicine
+ General Practice
+ Mass Immunization Roster Biller
+ Radiation Therapy
+ Centralized Flu
+ Clinical Laboratory
+ Physician Assistant
+ Ambulatory Surgical Center
+ Preventive Medicine
+ Diagnostic Radiology
+ Chiropractic
+ Independent Diagnostic Testing Facility
+ Unknown Physician Specialty Code
+ Hand Surgery
+ Maxillofacial Surgery
+ Occupational therapist
+ Speech Language Pathologist
+ Registered Dietician/Nutrition Professional
+ Allergy/Immunology
+ Medical Oncology
+ Interventional Pain Management
+ Multispecialty Clinic/Group Practice
+ Urology
+ Slide Preparation Facility
+ Addiction Medicine
+ Thoracic Surgery
+ Cardiac Surgery
+ Pulmonary Disease
+ Plastic and Reconstructive Surgery
+ Ophthalmology
+ Gastroenterology
+ Otolaryngology
+ Colorectal Surgery (formerly proctology)
+ CRNA
+ Rheumatology
+ Sports Medicine
+ Nuclear Medicine
+ Cardiac Electrophysiology
+ Neurosurgery
+ Anesthesiology
+ Neuropsychiatry
+ Obstetrics/Gynecology
+ Pharmacy
+ All Other Suppliers
+ Psychiatry
+ Interventional Radiology
+ Certified Nurse Midwife
+ Physical Medicine and Rehabilitation
+ Physical Therapist
+ Pain Management
+ Hematology
+ Audiologist (billing independently)
+ Hospice and Palliative Care
+ Licensed Clinical Social Worker
+ Clinical Psychologist
+ Peripheral Vascular Disease
+ Geriatric Medicine
+ Oral Surgery (dentists only)
+ Nephrology
+ Family Practice
+ Podiatry
+ Neurology
+ Cardiology
+ Surgical Oncology
+ Orthopedic Surgery
+ Portable X-ray
+ Radiation Oncology
+ Interventional Cardiology
+ Ambulance Service Supplier
+ Critical Care (Intensivists)
+ Anesthesiologist Assistants
+ Unknown Supplier/Provider
+ Dermatology
+ Infectious Disease
+ Mammographic Screening Center
+ Geriatric Psychiatry
+ Nurse Practitioner
+ Psychologist (billing independently)
+ Pathology
+ Optometry
+*/
 SELECT COUNT(DISTINCT provider_type) FROM summary;
 
 -- How many entries contain "oncology"?
@@ -153,3 +254,18 @@ SELECT COUNT(*) FROM summary
 -- 56
 SELECT COUNT(DISTINCT nppes_provider_state) FROM summary
   WHERE provider_type ILIKE '%Orthopedic Surgery%';
+
+
+-- npis from LEIE
+
+-- Licensed Clinical Social Worker
+SELECT provider_type FROM summary
+  WHERE npi='1174706295';
+
+-- Internal Medicine
+SELECT provider_type FROM summary
+  WHERE npi='1972607398';
+
+-- Family Practice
+SELECT provider_type FROM summary
+  WHERE npi='1861487308';
