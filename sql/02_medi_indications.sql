@@ -159,3 +159,172 @@ SELECT COUNT(DISTINCT rxcui_in) FROM medi_indication
 
 -- note: drug_desc needs to collapse consecutive white-spaces to just one for
 -- mapping later to other tables
+
+
+--142 indications containing 'lymph'
+SELECT COUNT(*) FROM medi_indication
+       WHERE indication_description ILIKE '%lymph%'
+       AND highprecisionsubset='1';
+
+
+-- 74 distinct drugs treating indication 'lymph'
+SELECT COUNT(DISTINCT rxcui_in) FROM medi_indication
+       WHERE indication_description ILIKE '%lymph%'
+       AND highprecisionsubset='1';
+
+
+-- https://en.wikipedia.org/wiki/List_of_ICD-9_codes_140%E2%80%93239:_neoplasms
+-- ICD-9 codes: 140–239: neoplasms
+SELECT COUNT(*) FROM medi_indication
+       WHERE cast(icd9 AS float) >= 140
+       AND cast(icd9 AS float) < 240;
+
+-- 3908 rows pertaining to ICD-9 category: neoplasms
+SELECT COUNT(*) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 140
+       AND cast(icd9 AS float) < 240;
+
+
+--887 distinct drugs for neoplasms
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 140
+       AND cast(icd9 AS float) < 240;
+
+
+-- 176 distinct indications under neoplasms category
+SELECT COUNT(DISTINCT icd9) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 140
+       AND cast(icd9 AS float) < 240;
+
+
+-- Examples of the 176 indications
+/*
+Malignant neoplasm of pleura; unspecified
+ Malignant neoplasm of head; face; and neck
+ Malignant neoplasm of other and unspecified sites of male breast
+ Other malignant neoplasm of unspecified site
+ Benign neoplasm NOS
+ Secondary malignant neoplasm of bone and bone marrow
+ Hemangioma of other sites
+ Uterine leiomyoma
+ Leukemia of unspecified cell type; acute
+ Peripheral T-cell lymphoma; unspecified site; extranodal and solid organ sites
+ Malignant neoplasm of breast (female); unspecified
+ Secondary malignant neoplasm of other parts of nervous system
+ Malignant neoplasm of esophagus
+ Uterine leiomyoma NOS
+ Hemangioma; any site
+ Malignant neoplasm of kidney; except pelvis
+ Burkitt's tumor or lymphoma
+ Neuroendocrine tumors
+ Malignant neoplasm of liver; primary
+*/
+SELECT DISTINCT indication_description FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 140
+       AND cast(icd9 AS float) < 240
+       LIMIT 176;
+
+
+/*
+Malignant neoplasm of lip, oral cavity, and pharynx (140–149)
+Malignant neoplasm of digestive organs and peritoneum (150–159), e.g. stomach, 
+                                                                 colon, liver
+Malignant neoplasm of respiratory and intrathoracic organs (160–165), e.g. lung
+Malignant neoplasm of bone, connective tissue, skin, and breast (170–175)
+Malignant neoplasm of genitourinary organs (179–189)
+Malignant neoplasm of other and unspecified sites (190–199), e.g. eye, brain, spine
+Malignant neoplasm of lymphatic and hematopoietic tissue (200–208)
+*/
+
+-- 5 drugs for indication: lip, oral cavity, pharynx
+-- 0 highprecisionsubset
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 140
+       AND cast(icd9 AS float) < 150
+       AND highprecisionsubset = '1';
+
+-- 116 drugs for digestive organs and peritoneum
+-- 23 highprecisionsubset
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 150
+       AND cast(icd9 AS float) < 160
+       AND highprecisionsubset = '1';
+
+-- 62 drugs for respiratory
+-- 25 highprecisionsubset
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 160
+       AND cast(icd9 AS float) < 166
+       AND highprecisionsubset = '1';
+
+-- 193 bone, connective tissue, skin, and breast
+-- 69 highprecisionsubset
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 170
+       AND cast(icd9 AS float) < 176
+       AND highprecisionsubset = '1';
+
+-- 177 drugs for  genitourinary organs (179–189)
+-- 64 highprecisionsubset
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 179
+       AND cast(icd9 AS float) < 190
+       AND highprecisionsubset = '1';
+       
+-- 213 drugs for other (190–199), e.g. eye, brain, spine
+-- 34 highprecisionsubset
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 190
+       AND cast(icd9 AS float) < 200
+       AND highprecisionsubset = '1';
+
+-- 490 drugs for lymphatic and hematopoietic tissue (200–208)
+-- 89 highprecisionsubset
+SELECT COUNT(DISTINCT rxcui_in) FROM (
+       SELECT * FROM medi_indication
+              WHERE icd9 NOT LIKE '%-%'
+              AND icd9 NOT LIKE '%|%'
+              AND icd9 !~ '^[A-z]+') AS single_icd9_codes
+       WHERE cast(icd9 AS float) >= 200
+       AND cast(icd9 AS float) < 208
+       AND highprecisionsubset = '1';
