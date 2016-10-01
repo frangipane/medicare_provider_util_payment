@@ -1,4 +1,4 @@
--- How many orthopedic surgerons in summary?
+-- How many orthopedic surgeons in summary?
 -- 21301
 SELECT COUNT(*)
   FROM summary
@@ -57,3 +57,27 @@ SELECT COUNT(*) FROM
         WHERE provider_type = 'Orthopedic Surgery'
         GROUP BY nppes_provider_street1, nppes_provider_city, nppes_provider_state
 ) AS counts_per_loc;
+
+
+-- 236,084 claims out of facility
+SELECT COUNT(*) FROM payments
+       WHERE provider_type = 'Orthopedic Surgery'
+       AND place_of_service='O';
+
+
+-- 18,634 doctors made claims out of facility
+SELECT COUNT(DISTINCT npi) FROM payments
+       WHERE provider_type = 'Orthopedic Surgery'
+       AND place_of_service='O';
+
+
+-- 75,922 claims in facility
+SELECT COUNT(*) FROM payments
+       WHERE provider_type = 'Orthopedic Surgery'
+       AND place_of_service='F';
+
+
+-- 16,320 doctors made claims in facility
+SELECT COUNT(DISTINCT npi) FROM payments
+       WHERE provider_type = 'Orthopedic Surgery'
+       AND place_of_service='F';
