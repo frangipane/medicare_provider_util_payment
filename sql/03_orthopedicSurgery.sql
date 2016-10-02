@@ -12,6 +12,17 @@ SELECT COUNT(DISTINCT npi)
   WHERE provider_type = 'Orthopedic Surgery';
 
 
+-- Do any of the surgeons in summary overlap in
+-- both first and last name?
+-- Yes, there are only 20,012 distinct last,first_name tuples,
+-- whereas there are 20,652 distinct npis.
+SELECT COUNT(*) FROM (
+       SELECT DISTINCT nppes_provider_last_org_name,
+                      nppes_provider_first_name
+             FROM payments
+             WHERE provider_type = 'Orthopedic Surgery') AS namepairs;
+
+
 -- Are all orth. surgeons in payments also in summary?
 -- yes
 SELECT DISTINCT nppes_provider_last_org_name AS name,
